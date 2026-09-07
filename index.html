@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shelfmeal: cook from what you already have</title>
+<meta name="description" content="Tell Shelfmeal what's in your kitchen. Get a meal you can actually make tonight, with what you have and what you're willing to spend.">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a href="#/" class="logo" data-nav="/">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7 2v7a2 2 0 0 0 2 2h0a2 2 0 0 0 2-2V2M9 11v11M17 2c-1.5 1.5-2 3-2 5.5S16 12 17 13v9" stroke="#C8432E" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Shelfmeal
+    </a>
+    <nav id="mainNav">
+      <a href="#/" data-nav="/">Home</a>
+      <a href="#/app" data-nav="/app">Find a meal</a>
+      <a href="#/privacy" data-nav="/privacy">Privacy</a>
+      <a href="#/terms" data-nav="/terms">Terms</a>
+    </nav>
+    <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false"><span></span></button>
+  </div>
+  <div class="check-band"></div>
+</header>
+
+<!-- HOME -->
+<section class="view" id="view-home">
+  <div class="wrap hero">
+    <div class="hero-grid">
+      <div>
+        <h1>You already own dinner. You just don't know it yet.</h1>
+        <p class="lede">List what's in your kitchen, or take a photo of your shelf and fridge. Shelfmeal builds a real recipe from what you actually have, and tells you the one or two things worth buying if you're short.</p>
+        <div class="cta-row">
+          <a href="#/app" class="btn" data-nav="/app">Find a meal</a>
+          <span class="cta-note">No account needed to try it.</span>
+        </div>
+      </div>
+      <div class="receipt-wrap">
+        <div class="receipt">
+          <div class="r-label">What you typed</div>
+          <ul>
+            <li><span>Rice</span></li>
+            <li><span>Half an onion</span></li>
+            <li><span>Two eggs</span></li>
+            <li><span>Soy sauce</span></li>
+            <li><span>Frozen peas</span></li>
+          </ul>
+          <div class="arrow-row"><div class="rule"></div><span>becomes</span><div class="rule"></div></div>
+          <div class="meal-name">Fried rice, egg and pea</div>
+          <div class="meal-meta">18 minutes &middot; uses 5 of 5 items &middot; nothing to buy</div>
+        </div>
+        <div class="receipt-tear"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap how">
+    <h2 style="font-size:26px;">How it actually works</h2>
+    <div class="how-steps">
+      <div class="step step-1">
+        <div class="num">01</div>
+        <h3>Tell it what you have</h3>
+        <p>Type a list, or upload one photo of your pantry shelf or fridge. Shelfmeal reads what's visible and adds it to your list for you to check.</p>
+      </div>
+      <div class="step step-2">
+        <div class="num">02</div>
+        <h3>Set a budget, if you have one</h3>
+        <p>Say how much you're willing to spend on anything extra. Zero is a valid answer. Shelfmeal will only suggest additions inside that number.</p>
+      </div>
+      <div class="step step-3">
+        <div class="num">03</div>
+        <h3>Get one real meal</h3>
+        <p>Not a list of ten options. One meal, with steps, using mostly what you listed, and a plain note on what to buy if anything.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- APP -->
+<section class="view" id="view-app">
+  <div class="wrap app-section">
+    <h1 style="font-size:30px;margin-bottom:8px;">Find a meal</h1>
+    <p style="color:var(--ink-soft);margin:0 0 32px;max-width:600px;">List what you have below. Add a photo if it's faster than typing. Nothing you enter is saved unless you say so.</p>
+
+    <div class="app-grid">
+      <div>
+        <div class="field">
+          <label for="pantryInput">What's in your kitchen</label>
+          <textarea id="pantryInput" placeholder="Rice, half an onion, two eggs, soy sauce, frozen peas"></textarea>
+          <div class="hint">One item per line or comma-separated. Rough amounts help but aren't required.</div>
+        </div>
+
+        <div class="field">
+          <label for="photoInput">Or add a photo of your shelf or fridge (optional)</label>
+          <div class="upload-box">
+            <input type="file" id="photoInput" accept="image/*">
+            <button class="btn secondary" id="scanBtn" style="white-space:nowrap;">Read photo</button>
+          </div>
+          <div id="chips" class="chips"></div>
+        </div>
+
+        <div class="row-2">
+          <div class="field">
+            <label for="budgetInput">Budget for anything extra</label>
+            <input type="number" id="budgetInput" placeholder="0" min="0" step="1">
+            <div class="hint">In dollars. Leave blank if you don't want to buy anything.</div>
+          </div>
+          <div class="field">
+            <label for="dietInput">Anything to avoid</label>
+            <input type="text" id="dietInput" placeholder="No dairy, no shellfish">
+            <div class="hint">Optional. Leave blank if nothing applies.</div>
+          </div>
+        </div>
+
+        <button class="btn" id="generateBtn" style="width:100%;">Find a meal</button>
+
+        <div class="allergy-note">
+          Shelfmeal generates suggestions from what you type. It does not verify ingredient safety or allergens. Always check labels yourself before eating, especially if you have a food allergy.
+        </div>
+      </div>
+
+      <div>
+        <div id="resultArea">
+          <div class="placeholder">Your meal will show up here once you list a few items and select "Find a meal."</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRIVACY -->
+<section class="view" id="view-privacy">
+  <div class="wrap legal narrow">
+    <h1>Privacy policy</h1>
+    <div class="updated">Last updated: draft, not yet published</div>
+
+    <p>This is placeholder policy text for the working version of Shelfmeal. Replace the bracketed sections with your real business details before this goes live, and have someone qualified review it against the laws that apply where your users are.</p>
+
+    <h2>What we collect</h2>
+    <ul>
+      <li>Pantry items you type in, for the length of your session, so a meal can be generated.</li>
+      <li>A photo, if you choose to upload one, sent to our meal-generation provider to identify items in it.</li>
+      <li>Basic technical data such as browser type and page views, if analytics are enabled.</li>
+    </ul>
+
+    <h2>What we don't do</h2>
+    <ul>
+      <li>We don't sell your pantry lists or photos to anyone.</li>
+      <li>We don't store your photo after it's been read, unless you create an account and choose to save it.</li>
+      <li>We don't use your data to train models outside of generating your own meal suggestion.</li>
+    </ul>
+
+    <h2>Third parties</h2>
+    <p>Meal and photo analysis is performed by a third-party AI provider. Text and images you submit are sent to that provider to generate a response and are subject to their own data handling terms. [Name the provider and link their policy here before launch.]</p>
+
+    <h2>Accounts</h2>
+    <p>[If you add accounts later: describe what's stored, how long, and how someone deletes their account and data.]</p>
+
+    <h2>Contact</h2>
+    <p>Questions about this policy can be sent to [your contact email].</p>
+  </div>
+</section>
+
+<!-- TERMS -->
+<section class="view" id="view-terms">
+  <div class="wrap legal narrow">
+    <h1>Terms and conditions</h1>
+    <div class="updated">Last updated: draft, not yet published</div>
+
+    <p>This is placeholder terms text for the working version of Shelfmeal. Have a lawyer review this before it goes live. It is not legal advice.</p>
+
+    <h2>What Shelfmeal is</h2>
+    <p>Shelfmeal suggests meals based on ingredients you provide. Suggestions are generated automatically and are not reviewed by a person before you see them.</p>
+
+    <h2>No dietary or medical advice</h2>
+    <p>Shelfmeal is not a substitute for professional dietary, nutritional, or medical advice. It does not verify allergens, ingredient safety, or nutritional accuracy. You are responsible for checking what you eat, especially if you have allergies, intolerances, or a medical condition affected by diet.</p>
+
+    <h2>Your responsibility</h2>
+    <ul>
+      <li>You're responsible for the accuracy of what you enter.</li>
+      <li>You're responsible for food safety once you're in your own kitchen, including checking that ingredients haven't expired or spoiled.</li>
+      <li>You must be old enough to agree to these terms in your own country to use Shelfmeal. [Set and state your minimum age.]</li>
+    </ul>
+
+    <h2>No warranty</h2>
+    <p>Shelfmeal is provided as is, without a guarantee that suggestions will be accurate, safe, or to your taste. [Add your jurisdiction's required liability language here.]</p>
+
+    <h2>Changes</h2>
+    <p>These terms may change as the product changes. [Describe how you'll notify users of changes.]</p>
+
+    <h2>Contact</h2>
+    <p>Questions about these terms can be sent to [your contact email].</p>
+  </div>
+</section>
+
+<div class="check-band"></div>
+<footer>
+  <div class="wrap">
+    <span class="logo-mark">Shelfmeal</span>
+    <nav>
+      <a href="#/privacy" data-nav="/privacy">Privacy</a>
+      <a href="#/terms" data-nav="/terms">Terms</a>
+    </nav>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+
+</body>
+</html>
