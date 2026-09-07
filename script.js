@@ -68,17 +68,16 @@
 
   async function callClaude(messages, extraOptions){
     var body = Object.assign({
-      model: 'claude-sonnet-4-6',
       max_tokens: 1000,
       messages: messages
     }, extraOptions || {});
-    var res = await fetch('https://api.anthropic.com/v1/messages', {
+    var res = await fetch('/api/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body)
     });
     if(!res.ok){
-      throw new Error('The meal generator did not respond. Try again in a moment.');
+      throw new Error('did not respond, status ' + res.status);
     }
     var data = await res.json();
     var text = (data.content || [])
@@ -197,7 +196,11 @@
       var meal = JSON.parse(clean);
       renderResult(meal);
     }catch(err){
-      renderError('Could not put together a meal from that list. Try adding a couple more items, or try again.');
+      if(err.message && err.message.indexOf('did not respond') !== -1){
+        renderError('Could not reach the meal generator (' + err.message + '). If you are testing locally, make sure you are running this through "vercel dev" and not a plain static server, since /api/generate needs to actually run.');
+      } else {
+        renderError('Got a response back but could not turn it into a meal. This is usually temporary, try again.');
+      }
     }finally{
       btn.disabled = false;
     }
