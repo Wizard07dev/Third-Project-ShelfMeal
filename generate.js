@@ -4,9 +4,16 @@ export default async function handler(req, res) {
     return;
   }
 
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) {
-    res.status(500).json({ error: 'Server is missing its API key. Set ANTHROPIC_API_KEY in Vercel.' });
+  // On a Vercel deployment this token is provided automatically, no setup needed.
+  // If you'd rather use your own AI Gateway key instead, set AI_GATEWAY_API_KEY
+  // in your Vercel project's environment variables and it will be used instead.
+  const gatewayKey = process.env.AI_GATEWAY_API_KEY;
+  const oidcToken = process.env.VERCEL_OIDC_TOKEN;
+
+  if (!gatewayKey && !oidcToken) {
+    res.status(500).json({
+      error: 'No AI Gateway credentials found. If you are testing locally, run "vercel link" then "vercel dev" so the OIDC token is available.'
+    });
     return;
   }
 
@@ -18,24 +25,30 @@ export default async function handler(req, res) {
       return;
     }
 
-    const anthropicRes = await fetch('https://api.anthropic.com/v1/messages', {
+    const headers = {
+      'Content-Type': 'application/json',
+      'anthropic-version': '2023-06-01'
+    };
+    if (gatewayKey) {
+      headers['x-api-key'] = gatewayKey;
+    } else {
+      headers['Authorization'] = 'Bearer ' + oidcToken;
+    }
+
+    const gatewayRes = await fetch('https://ai-gateway.vercel.sh/v1/messages', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01'
-      },
+      headers: headers,
       body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
+        model: 'anthropic/claude-sonnet-4-6',
         max_tokens: max_tokens || 1000,
         messages: messages
       })
     });
 
-    const data = await anthropicRes.json();
+    const data = await gatewayRes.json();
 
-    if (!anthropicRes.ok) {
-      res.status(anthropicRes.status).json({ error: data.error?.message || 'Anthropic API error.' });
+    if (!gatewayRes.ok) {
+      res.status(gatewayRes.status).json({ error: data.error?.message || 'AI Gateway error.' });
       return;
     }
 
