@@ -39,7 +39,7 @@ export default async function handler(req, res) {
       method: 'POST',
       headers: headers,
       body: JSON.stringify({
-        model: 'anthropic/claude-sonnet-4-6',
+        model: 'anthropic/claude-haiku-4.5',
         max_tokens: max_tokens || 1000,
         messages: messages
       })
@@ -48,7 +48,11 @@ export default async function handler(req, res) {
     const data = await gatewayRes.json();
 
     if (!gatewayRes.ok) {
-      res.status(gatewayRes.status).json({ error: data.error?.message || 'AI Gateway error.' });
+      var message = data.error?.message || 'AI Gateway error.';
+      if (gatewayRes.status === 403) {
+        message = 'This model is not available on the free tier (' + message + '). Try a lower-cost model, or add AI Gateway credits.';
+      }
+      res.status(gatewayRes.status).json({ error: message });
       return;
     }
 
