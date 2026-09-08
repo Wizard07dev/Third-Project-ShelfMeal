@@ -76,10 +76,10 @@
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body)
     });
+    var data = await res.json().catch(function(){ return {}; });
     if(!res.ok){
-      throw new Error('did not respond, status ' + res.status);
+      throw new Error((data && data.error) ? data.error : ('did not respond, status ' + res.status));
     }
-    var data = await res.json();
     var text = (data.content || [])
       .map(function(block){ return block.type === 'text' ? block.text : ''; })
       .join('\n')
@@ -196,11 +196,7 @@
       var meal = JSON.parse(clean);
       renderResult(meal);
     }catch(err){
-      if(err.message && err.message.indexOf('did not respond') !== -1){
-        renderError('Could not reach the meal generator (' + err.message + '). If you are testing locally, make sure you are running this through "vercel dev" and not a plain static server, since /api/generate needs to actually run.');
-      } else {
-        renderError('Got a response back but could not turn it into a meal. This is usually temporary, try again.');
-      }
+      renderError(err.message || 'Something went wrong putting a meal together. Try again.');
     }finally{
       btn.disabled = false;
     }
